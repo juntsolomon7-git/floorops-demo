@@ -42,7 +42,7 @@
       </div>
       <div class="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800 text-slate-300">
         <span id="engineDot" class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="engineLabel">Engine: <strong id="activeModelLabel" class="text-white">Gemini 3.5 Flash</strong></span>
+        <span id="engineLabel">Engine: <strong id="activeModelLabel" class="text-white">Gemini 2.5 Flash</strong></span>
       </div>
       <button onclick="resetDemo()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5 border border-slate-700">
         <i class="fa-solid fa-rotate-left text-xs"></i> Reset
@@ -56,14 +56,28 @@
     <!-- Left Column: Live Document Intake (5 Cols) -->
     <section class="lg:col-span-5 flex flex-col gap-4">
       <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col flex-1 shadow-lg shadow-black/20">
+        <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+            <i class="fa-solid fa-file-invoice text-emerald-400"></i> Document Source
+          </h2>
+          
+          <div class="flex items-center gap-2">
+            <select id="docSelector" onchange="handlePresetSelection()" class="text-xs bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-emerald-500">
+              <option value="upload">-- Upload Prospect Document --</option>
+              <option value="dpr-06">Preset: CT-A10 (Absenteeism Edge Case)</option>
+              <option value="dpr-sewing">Preset: Mitc Sewing (15 MP Line)</option>
+              <option value="dipr-9263">Preset: James Dumanhog (Piece-Rate Coupons)</option>
+            </select>
+          </div>
+        </div>
 
-        <!-- Drag & Drop / Inspection Frame (Full Height, Red Bar Removed) -->
+        <!-- Drag & Drop / Inspection Frame -->
         <div id="dropZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)" 
-             class="relative rounded-lg overflow-hidden border-2 border-dashed border-slate-800 hover:border-slate-700 bg-slate-900/60 flex-1 min-h-[530px] flex flex-col items-center justify-center p-3 transition-colors">
+             class="relative rounded-lg overflow-hidden border-2 border-dashed border-slate-800 hover:border-slate-700 bg-slate-900/60 flex-1 min-h-[490px] flex flex-col items-center justify-center p-3 transition-colors">
           
           <!-- Image Display Container -->
           <div id="imageDisplayBox" class="w-full h-full flex flex-col items-center justify-center relative hidden">
-            <img id="previewImage" src="" alt="Source Document" class="max-h-[500px] max-w-full object-contain rounded shadow-md" />
+            <img id="previewImage" src="" alt="Source Document" class="max-h-[460px] max-w-full object-contain rounded shadow-md" />
             <div class="absolute bottom-2.5 left-2.5 bg-slate-950/85 backdrop-blur border border-slate-700 text-slate-300 text-[10px] px-2.5 py-1 rounded font-mono flex items-center gap-1.5 shadow">
               <i class="fa-solid fa-circle-info text-emerald-400"></i> <span id="docMetaBadge">Prospect Scanned Artifact</span>
             </div>
@@ -76,7 +90,7 @@
             </div>
             <div>
               <p class="text-sm font-semibold text-slate-200">Upload Prospect's DPR or DIPR Sheet</p>
-              <p class="text-xs text-slate-400 mt-1 max-w-xs leading-relaxed">Drag and drop any smartphone photo, scanned PDF, or JPEG report, or click "Upload Document" below.</p>
+              <p class="text-xs text-slate-400 mt-1 max-w-xs leading-relaxed">Drag and drop any smartphone photo, scanned PDF, or JPEG report, or browse from your computer.</p>
             </div>
             <label class="mt-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold cursor-pointer transition flex items-center gap-2">
               <i class="fa-regular fa-folder-open"></i> Browse Files
@@ -113,11 +127,11 @@
         </div>
         <div class="flex-1">
           <div id="auditTitle" class="font-bold text-white mb-0.5 text-xs">Ready for Document Ingestion</div>
-          <div id="auditDesc" class="text-slate-400 leading-relaxed text-[11px]">Upload a sheet using the button on the left to extract operator lines, piece-rate coupons, and shift efficiency metrics.</div>
+          <div id="auditDesc" class="text-slate-400 leading-relaxed text-[11px]">Upload a sheet or select a preset to extract operator lines, piece-rate coupons, and shift efficiency metrics.</div>
         </div>
       </div>
 
-      <!-- Scanned Document Header Information Card -->
+      <!-- Scanned Document Header Information (Red Box Ingestion Card) -->
       <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-lg shadow-black/20">
         <div class="flex justify-between items-center mb-2.5">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
@@ -127,21 +141,25 @@
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <!-- Department -->
           <div class="bg-slate-900/90 border border-slate-800/80 rounded-lg p-2.5 flex flex-col">
             <span class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Department</span>
             <span id="hdrDept" class="text-emerald-400 font-bold font-mono text-sm mt-0.5">—</span>
           </div>
 
+          <!-- Date -->
           <div class="bg-slate-900/90 border border-slate-800/80 rounded-lg p-2.5 flex flex-col">
             <span class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Date</span>
             <span id="hdrDate" class="text-white font-semibold font-mono text-sm mt-0.5">—</span>
           </div>
 
+          <!-- Manpower / Workers -->
           <div class="bg-slate-900/90 border border-slate-800/80 rounded-lg p-2.5 flex flex-col">
             <span class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Workers / MP</span>
             <span id="hdrWorkers" class="text-amber-400 font-bold font-mono text-sm mt-0.5">—</span>
           </div>
 
+          <!-- Shift Hours -->
           <div class="bg-slate-900/90 border border-slate-800/80 rounded-lg p-2.5 flex flex-col">
             <span class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Shift Schedule</span>
             <span id="hdrShift" class="text-slate-200 font-semibold font-mono text-sm mt-0.5">—</span>
@@ -175,7 +193,7 @@
             <tbody id="extractionTableBody" class="divide-y divide-slate-800/60 font-mono">
               <tr>
                 <td colspan="7" class="py-20 text-center text-slate-500">
-                  <i class="fa-solid fa-arrow-left mr-2"></i> Upload a document to demo extraction
+                  <i class="fa-solid fa-arrow-left mr-2"></i> Upload a document or select a preset to demo extraction
                 </td>
               </tr>
             </tbody>
@@ -197,10 +215,11 @@
   </main>
 
   <script>
-    // Verified Ground Truth Presets for Instant Offline Demonstration
+    // Verified Datasets with Header Metadata
     const sampleDocs = {
       'dpr-06': {
-        title: "CT-A10 (Absenteeism Edge Case)",
+        title: "Preset: CT-A10 (Absenteeism Edge Case)",
+        imageSrc: "viber_image_2026-09-01_12-52-44-201.jpeg",
         header: {
           dept: "CT-A10",
           date: "08-29-26",
@@ -219,7 +238,8 @@
         }
       },
       'dpr-sewing': {
-        title: "Mitc Sewing (15 MP Line)",
+        title: "Preset: Mitc Sewing (15 MP Line)",
+        imageSrc: "viber_image_2026-09-01_12-53-08-346.jpeg",
         header: {
           dept: "Mitc Sewing",
           date: "Aug 29, 2026",
@@ -243,7 +263,8 @@
         }
       },
       'dipr-9263': {
-        title: "James Dumanhog (Piece-Rate Coupons)",
+        title: "Preset: James Dumanhog (Piece-Rate Coupons)",
+        imageSrc: "0ac62eac-da10-495f-9fb7-f894aed0ea21.jpeg",
         header: {
           dept: "Section L",
           date: "8-29-26",
@@ -265,7 +286,7 @@
       }
     };
 
-    // Offline Smart Matching Index for Random Hashes
+    // Offline Smart Matching Index - Supports both original file patterns and uploaded GUIDs
     const knownDocDatabase = {
       'ct-a10': {
         matches: ["b4a9f4df", "12-52-44", "cta10", "345803", "frank", "122"],
@@ -283,6 +304,18 @@
 
     let currentImageData = null;
     let currentFileName = "";
+    let currentMode = "upload";
+
+    function handlePresetSelection() {
+      const selected = document.getElementById('docSelector').value;
+      currentMode = selected;
+      if (selected === "upload") {
+        clearUploadedImage();
+      } else {
+        const doc = sampleDocs[selected];
+        displayImage(doc.imageSrc, doc.title);
+      }
+    }
 
     function handleDragOver(e) {
       e.preventDefault();
@@ -313,6 +346,8 @@
       const reader = new FileReader();
       reader.onload = function(event) {
         currentImageData = event.target.result;
+        currentMode = "custom";
+        document.getElementById('docSelector').value = "upload";
         displayImage(currentImageData, `Client Upload: ${file.name}`);
         resetTableAndAudit();
       };
@@ -330,6 +365,7 @@
     function clearUploadedImage() {
       currentImageData = null;
       currentFileName = "";
+      currentMode = "upload";
       document.getElementById('imageDisplayBox').classList.add('hidden');
       document.getElementById('emptyUploadState').classList.remove('hidden');
       document.getElementById('fileInput').value = "";
@@ -361,8 +397,8 @@
       const scanLine = document.getElementById('scanLine');
       const btn = document.getElementById('processBtn');
 
-      if (!currentImageData) {
-        alert("Please upload a document photo first using the 'Upload Document' button.");
+      if (currentMode === "upload" && !currentImageData) {
+        alert("Please upload a document photo or select a preset first.");
         return;
       }
 
@@ -373,7 +409,7 @@
 
       const startTime = performance.now();
 
-      // Live Gemini Multimodal Inference with verified model name
+      // Case 1: Live Gemini Multimodal Inference if API key provided
       if (apiKey && currentImageData) {
         try {
           await callCascadingGeminiAPI(apiKey, currentImageData, startTime);
@@ -382,6 +418,7 @@
           runSmartOfflineMatching(startTime, err.message);
         }
       } else {
+        // Case 2: Smart Offline Matching Demo
         setTimeout(() => {
           runSmartOfflineMatching(startTime);
         }, 1250);
@@ -395,10 +432,11 @@
       }, 1300);
     }
 
-    // Modern Gemini Cascading Endpoint Resolver using gemini-3.5-flash
+    // Modern Gemini Cascading Endpoint Resolver
     async function callCascadingGeminiAPI(key, base64Data, startTime) {
       const cleanBase64 = base64Data.includes(',') ? base64Data.split(',')[1] : base64Data;
-      const modelCandidates = ['gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-1.5-flash-latest'];
+      
+      const modelCandidates = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash-latest'];
       
       const promptText = `Extract tabular rows and header information from this Daily Production Report (DPR) or Daily Individual Productivity Report (DIPR).
 Return a strict JSON object with this structure:
@@ -499,6 +537,11 @@ Return a strict JSON object with this structure:
     function runSmartOfflineMatching(startTime, optNotice = "") {
       const duration = ((performance.now() - startTime) / 1000).toFixed(2);
 
+      if (currentMode !== "custom" && currentMode !== "upload") {
+        renderExtractedData(sampleDocs[currentMode], duration);
+        return;
+      }
+
       let matchedKey = null;
       for (const k in knownDocDatabase) {
         if (knownDocDatabase[k].matches.some(m => currentFileName.includes(m))) {
@@ -507,10 +550,12 @@ Return a strict JSON object with this structure:
         }
       }
 
+      // Default to CT-A10 if the uploaded file is b4a9f4df or contains 12-52-44
       if (!matchedKey && (currentFileName.includes("b4a9f4df") || currentFileName.includes("12-52-44"))) {
         matchedKey = "dpr-06";
       }
 
+      // Default to sewing report if the uploaded file is 1d96e58e or contains typical sewing styles
       if (!matchedKey && (currentFileName.includes("1d96e58e") || currentFileName.includes("12-53-08") || currentFileName.includes("sewing"))) {
         matchedKey = "dpr-sewing";
       }
@@ -545,6 +590,7 @@ Return a strict JSON object with this structure:
     }
 
     function renderExtractedData(doc, latency = "1.38") {
+      // 1. Render Header Metadata
       if (doc.header) {
         document.getElementById('hdrDept').innerText = doc.header.dept || '—';
         document.getElementById('hdrDate').innerText = doc.header.date || '—';
@@ -552,6 +598,7 @@ Return a strict JSON object with this structure:
         document.getElementById('hdrShift').innerText = doc.header.shift || '—';
       }
 
+      // 2. Render Table Rows
       const tbody = document.getElementById('extractionTableBody');
       const auditBanner = document.getElementById('auditBanner');
       const auditIcon = document.getElementById('auditIcon');
@@ -615,6 +662,7 @@ Return a strict JSON object with this structure:
     }
 
     function resetDemo() {
+      document.getElementById('docSelector').value = 'upload';
       clearUploadedImage();
     }
   </script>
