@@ -436,7 +436,7 @@
     async function callCascadingGeminiAPI(key, base64Data, startTime) {
       const cleanBase64 = base64Data.includes(',') ? base64Data.split(',')[1] : base64Data;
       
-      const modelCandidates = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash-latest'];
+      const modelCandidates = ['gemini-3.5-flash','gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash-latest'];
       
       const promptText = `Extract tabular rows and header information from this Daily Production Report (DPR) or Daily Individual Productivity Report (DIPR).
 Return a strict JSON object with this structure:
